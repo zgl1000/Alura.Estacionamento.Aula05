@@ -33,7 +33,8 @@ namespace Alura.Estacionamento.Modelos
 
         public void RegistrarEntradaVeiculo(Veiculo veiculo)
         {
-            veiculo.HoraEntrada = DateTime.Now;           
+            veiculo.HoraEntrada = DateTime.Now;
+            this.GerarTicket(veiculo);
             this.Veiculos.Add(veiculo);            
         }
 
@@ -94,16 +95,27 @@ namespace Alura.Estacionamento.Modelos
             return veiculoTemp;
 
          }
-        public Veiculo PesquisaVeiculo(string placa)
+        public Veiculo PesquisaVeiculo(string idTicket)
         {
             // Como estamos trabalhando com array de objetos,
             // Podemos utilizar os recursos do `Linq to Objetcs` do .NET
             var encontrado = (from veiculo in this.Veiculos 
-                             where veiculo.Placa == placa 
+                             where veiculo.IdTicket == idTicket 
                              select veiculo).SingleOrDefault();
             return encontrado;
         }
 
+        private void GerarTicket(Veiculo veiculo)
+        {
+            veiculo.IdTicket = new Guid().ToString().Substring(0, 5);
+
+            string ticket = "### Ticket Estacionamento Alura ###" +
+                            $">>> Identificador: {veiculo.IdTicket}" +
+                            $">>> Data/Hora de Entrada: {DateTime.Now}" +
+                            $">>> Placa Veículo: {veiculo.Placa}";
+
+            veiculo.Ticket = ticket;
+        }
       
     }
 }

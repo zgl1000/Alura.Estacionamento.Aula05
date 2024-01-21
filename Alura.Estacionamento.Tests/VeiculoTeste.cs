@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace Alura.Estacionamento.Tests
 {
-    public class VeiculoTeste
+    public class VeiculoTeste : IDisposable
     {
         public ITestOutputHelper Output { get; }
         private Veiculo veiculo;
@@ -99,6 +99,39 @@ namespace Alura.Estacionamento.Tests
 
             //Assert
             Assert.Contains("Ficha do Veículo", dadosveiculo);
+        }
+
+        [Fact]
+        public void TestaNomeProprietarioVeiculoComMenosDeTresCaracteres()
+        {
+            //Arrange
+            string nomeProprietario = "AB";
+
+            //Assert
+            Assert.Throws<System.FormatException>(
+                //Act
+                () => new Veiculo(nomeProprietario)
+            );
+        }
+
+        [Fact]
+        public void TestaMensagemDeExcecaoDoQuartoCaractereDaPlaca()
+        {
+            //Arrange
+            string placa = "ASDF8888";
+
+            //Act
+            var mensagem = Assert.Throws<System.FormatException>(
+                () => new Veiculo().Placa = placa
+            );
+
+            //Assert
+            Assert.Equal("O 4° caractere deve ser um hífen", mensagem.Message);
+        }
+
+        public void Dispose()
+        {
+            Output.WriteLine("Execução do Dispose.");
         }
     }
 }
